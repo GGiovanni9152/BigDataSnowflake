@@ -22,3 +22,22 @@ INSERT INTO dim_pets(category, type, name, breed)
 SELECT DISTINCT pet_category, customer_pet_type, customer_pet_name, customer_pet_breed
 FROM mock_data;
 
+INSERT INTO fact_sales(customer_id, seller_id, product_id, store_id, supplier_id, pet_id, sale_date, quantity, total_price)
+SELECT
+    cust.customer_id,
+    sell.seller_id,
+    prod.product_id,
+    stor.store_id,
+    supp.supplier_id,
+    pt.pet_id,
+    mock.sale_date,
+    mock.sale_quantity,
+    mock.sale_total_price
+FROM mock_data AS mock
+JOIN dim_customers AS cust ON mock.customer_email = cust.email
+JOIN dim_sellers AS sell ON mock.seller_email = sell.email
+JOIN dim_products AS prod ON mock.id = prod.product_id
+JOIN dim_stores AS stor ON mock.id = stor.store_id
+JOIN dim_suppliers AS supp ON mock.id = supp.supplier_id
+LEFT JOIN dim_pets AS pt ON mock.id = pt.pet_id;
+
